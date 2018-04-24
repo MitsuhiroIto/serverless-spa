@@ -1,0 +1,37 @@
+cd Resources:
+  UserPool:
+    Type: 'AWS::Cognito::UserPool'
+    Properties:
+      Schema:
+        - Name: 'email'
+          StringAttributeConstraints:
+            MinLength: '0'
+            MaxLength: '2048'
+          Required: true
+          AttributeDataType: 'String'
+          Mutable: true
+      AliasAttributes: ['email']
+      AutoVerifiedAttributes: ['email']
+      EmailVerificationSubject: 'Your verification code'
+      EmailVerificationMessage: 'Your confirmation code is {####}.'
+      MfaConfiguration: 'OFF'
+      UserPoolName: 
+        Ref: AWS::StackName
+      Policies:
+        PasswordPolicy:
+          RequireLowercase: false
+          RequireSymbols: false
+          RequireNumbers: false
+          MinimumLength: 6
+          RequireUppercase: false
+  UserPoolClient:
+    Type: "AWS::Cognito::UserPoolClient"
+    Properties:
+      ClientName: 'photo-app'
+      GenerateSecret: false
+      UserPoolId: !Ref UserPool
+Outputs:
+  UserPoolId:
+    Value: !Ref UserPool
+  UserPoolClientId:
+    Value: !Ref UserPoolClient

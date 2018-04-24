@@ -1,0 +1,236 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: ''
+Resources:
+  postImages:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: postImages/
+      Handler: post-images.lambda_handler
+      Runtime: python3.6
+      Description: ''
+      MemorySize: 128
+      Timeout: 15
+      Role: arn:aws:iam::251699169519:role/lambda-dynamobd-access
+      Environment:
+        Variables:
+          BUCKET_NAME: mitsu-serverless-app-photos
+          TABLE_NAME: mitsu-photos
+  updateImage:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Description: ''
+      CodeUri: updateImage/
+      Handler: update-image.lambda_handler
+      Runtime: python3.6
+      MemorySize: 128
+      Timeout: 15
+      Role: arn:aws:iam::251699169519:role/lambda-dynamobd-access
+      Environment:
+        Variables:
+          BUCKET_NAME: mitsu-serverless-app-photos
+          TABLE_NAME: mitsu-photos
+
+  getImages:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Description: ''
+      CodeUri: getImages/
+      Handler: get-images.lambda_handler
+      MemorySize: 128
+      Role: arn:aws:iam::251699169519:role/lambda-dynamobd-access
+      Runtime: python3.6
+      Timeout: 3
+      Environment:
+        Variables:
+          BUCKET_NAME: mitsu-serverless-app-photos
+          TABLE_NAME: mitsu-photos
+  getImageById:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Description: ''
+      CodeUri: getImageById/
+      Handler: get-image-by-id.lambda_handler
+      MemorySize: 128
+      Role: arn:aws:iam::251699169519:role/lambda-dynamobd-access
+      Runtime: python3.6
+      Timeout: 3
+      Environment:
+        Variables:
+          BUCKET_NAME: mitsu-serverless-app-photos
+          TABLE_NAME: mitsu-photos
+  deleteImageById:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Description: ''
+      CodeUri: deleteImageById/
+      Handler: delete-image-by-id.lambda_handler
+      MemorySize: 128
+      Role: arn:aws:iam::251699169519:role/lambda-dynamobd-access
+      Runtime: python3.6
+      Timeout: 3
+      Environment:
+        Variables:
+          BUCKET_NAME: mitsu-serverless-app-photos
+          TABLE_NAME: mitsu-photos
+  Api:
+    Type: 'AWS::Serverless::Api'
+    Properties:
+      StageName: Prod
+      DefinitionBody:
+        swagger: "2.0"
+        info:
+          version: "1.0"
+          title: "serverless-app"
+        schemes:
+        - "https"
+        paths:
+          /images:
+            get:
+              responses: {}
+              security:
+              - Cognito_Custom_Authorizer: []
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/${getImages.Arn}/invocations
+                passthroughBehavior: "when_no_match"
+                httpMethod: "POST"
+                type: "aws_proxy"
+            post:
+              responses: {}
+              security:
+              - Cognito_Custom_Authorizer: []
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/${postImages.Arn}/invocations
+                passthroughBehavior: "when_no_match"
+                httpMethod: "POST"
+                type: "aws_proxy"
+            put:
+              responses: {}
+              security:
+              - Cognito_Custom_Authorizer: []
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/${updateImage.Arn}/invocations
+                passthroughBehavior: "when_no_match"
+                httpMethod: "POST"
+                type: "aws_proxy"
+            options:
+              consumes:
+                - application/json
+              produces:
+                - application/json
+              x-amazon-apigateway-integration:
+                type: mock
+                requestTemplates:
+                  application/json: |
+                    {
+                      "statusCode" : 200
+                    }
+                responses:
+                  "default":
+                    statusCode: "200"
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+                      method.response.header.Access-Control-Allow-Methods : "'GET, POST, PUT, DELETE'"
+                      method.response.header.Access-Control-Allow-Origin : "'*'"
+                    responseTemplates:
+                      application/json: |
+                        {}
+              responses:
+                "200":
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: "string"
+                    Access-Control-Allow-Methods:
+                      type: "string"
+                    Access-Control-Allow-Origin:
+                      type: "string"
+          /images/{id}:
+            get:
+              responses: {}
+              security:
+              - Cognito_Custom_Authorizer: []
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/${getImageById.Arn}/invocations
+                passthroughBehavior: "when_no_match"
+                httpMethod: "POST"
+                type: "aws_proxy"
+            delete:
+              responses: {}
+              security:
+              - Cognito_Custom_Authorizer: []
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/${deleteImageById.Arn}/invocations
+                passthroughBehavior: "when_no_match"
+                httpMethod: "POST"
+                type: "aws_proxy"
+            options:
+              consumes:
+                - application/json
+              produces:
+                - application/json
+              x-amazon-apigateway-integration:
+                type: mock
+                requestTemplates:
+                  application/json: |
+                    {
+                      "statusCode" : 200
+                    }
+                responses:
+                  "default":
+                    statusCode: "200"
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+                      method.response.header.Access-Control-Allow-Methods : "'GET, POST, PUT, DELETE'"
+                      method.response.header.Access-Control-Allow-Origin : "'*'"
+                    responseTemplates:
+                      application/json: |
+                        {}
+              responses:
+                "200":
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: "string"
+                    Access-Control-Allow-Methods:
+                      type: "string"
+                    Access-Control-Allow-Origin:
+                      type: "string"
+        securityDefinitions:
+          Cognito_Custom_Authorizer:
+            type: "apiKey"
+            name: "Authorization"
+            in: "header"
+            x-amazon-apigateway-authtype: "cognito_user_pools"
+            x-amazon-apigateway-authorizer:
+              providerARNs:
+              - "arn:aws:cognito-idp:ap-northeast-1:251699169519:userpool/ap-northeast-1_Xm26yt9iF"
+              type: "cognito_user_pools"
+  getImagesPermission:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref getImages
+      Principal: apigateway.amazonaws.com
+  postImagesPermission:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref postImages
+      Principal: apigateway.amazonaws.com
+  updateImagePermission:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref updateImage
+      Principal: apigateway.amazonaws.com
+  getImageByIdPermission:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref getImageById
+      Principal: apigateway.amazonaws.com
+  deleteImageByIdPermission:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref deleteImageById
+      Principal: apigateway.amazonaws.com
