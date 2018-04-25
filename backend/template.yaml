@@ -30,7 +30,6 @@ Resources:
         Variables:
           BUCKET_NAME: mitsu-serverless-app-photos
           TABLE_NAME: mitsu-photos
-
   getImages:
     Type: 'AWS::Serverless::Function'
     Properties:
@@ -206,31 +205,31 @@ Resources:
               type: "cognito_user_pools"
   getImagesPermission:
     Type: "AWS::Lambda::Permission"
-    Properties:
+    Properties: 
       Action: lambda:InvokeFunction
       FunctionName: !Ref getImages
       Principal: apigateway.amazonaws.com
   postImagesPermission:
     Type: "AWS::Lambda::Permission"
-    Properties:
+    Properties: 
       Action: lambda:InvokeFunction
       FunctionName: !Ref postImages
       Principal: apigateway.amazonaws.com
   updateImagePermission:
     Type: "AWS::Lambda::Permission"
-    Properties:
+    Properties: 
       Action: lambda:InvokeFunction
       FunctionName: !Ref updateImage
       Principal: apigateway.amazonaws.com
   getImageByIdPermission:
     Type: "AWS::Lambda::Permission"
-    Properties:
+    Properties: 
       Action: lambda:InvokeFunction
       FunctionName: !Ref getImageById
       Principal: apigateway.amazonaws.com
   deleteImageByIdPermission:
     Type: "AWS::Lambda::Permission"
-    Properties:
+    Properties: 
       Action: lambda:InvokeFunction
       FunctionName: !Ref deleteImageById
       Principal: apigateway.amazonaws.com

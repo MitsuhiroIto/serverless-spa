@@ -7,13 +7,13 @@
         </div>
     </div>
     <div v-for="image in images" :key="image.photo_id" class="photo pure-u-1-3 pure-u-md-1-3 pure-u-lg-1-3 pure-u-xl-1-3">
-        <img v-bind:src="image_url_base + '/' +image.photo_id + '.' + image.type.split('/')[1]">
+        <router-link v-bind:to="{ name : 'photo', params : { photo_id: image.photo_id }}"><img v-bind:src="image_url_base + '/' +image.photo_id + '.' + image.type.split('/')[1]"></router-link>
     </div>
     <div class="pure-u-1 form-box" id="upload-image">
         <div class="l-box">
             <h2>Upload a Photo</h2>
-            <input v-on:change="onFileChange" type="file" name=" file" placeholder="Photo from your computer" accept=" image/*" required>
-            <button v-on:click="uploadImage" class="pure-button pure-button-primary"> アップロード</button>
+            <input v-on:change="onFileChange" type="file" name="file" placeholder="Photo from your computer" accept=" image/*" required>
+            <button v-on:click="uploadImage" class="pure-button pure-button-primary">アップロード</button>
         </div>
     </div>
 </div>
@@ -61,10 +61,13 @@ export default {
       const file = this.uploadFile;
       let json = null;
       const _this = this;
+      const auth_header = auth.get_id_token();
 
       const data = { size: file.size, type: file.type };
       axios
-        .post(`${API_BASE_URL}/images/`, JSON.stringify(data))
+        .post(`${API_BASE_URL}/images/`, JSON.stringify(data), {
+          headers: { Authorization: auth_header },
+        })
         .then((res) => {
           json = JSON.parse(JSON.stringify(res.data));
 
@@ -76,10 +79,14 @@ export default {
             })
             .then(() => {
               json.status = 'Uploaded';
-              axios.put(`${API_BASE_URL}/images/`, json).then(() => {
-                alert('Successfully uploaded photo.');
-                _this.$router.go(_this.$router.currentRoute);
-              });
+              axios
+                .put(`${API_BASE_URL}/images/`, json, {
+                  headers: { Authorization: auth_header },
+                })
+                .then(() => {
+                  alert('Successfully uploaded photo.');
+                  _this.$router.go(_this.$router.currentRoute);
+                });
             })
             .catch((error) => {
               alert(error);

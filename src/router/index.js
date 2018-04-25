@@ -4,6 +4,7 @@ import Home from '@/components/Home';
 import Signup from '@/components/Signup';
 import Confirm from '@/components/Confirm';
 import Login from '@/components/Login';
+import Photo from '@/components/Photo';
 import auth from '@/auth';
 
 Vue.use(Router);
@@ -55,6 +56,12 @@ export default new Router({
       path: '/',
       name: 'root',
       component: Home,
+      beforeEnter: requireAuth,
+    },
+    {
+      path: '/photo',
+      name: 'photo',
+      component: Photo,
       beforeEnter: requireAuth,
     },
   ],
