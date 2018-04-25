@@ -137,7 +137,7 @@ Resources:
     Type: AWS::Serverless::Api
   deleteImageById:
     Properties:
-      CodeUri: s3://mitsu-serverless-book-sample-spa/cdc6eafaa1641f4a8c195c39d0485f27
+      CodeUri: s3://mitsu-serverless-book-sample-spa/e426778dabd04b65fad11d5078436275
       Description: ''
       Environment:
         Variables:
@@ -158,7 +158,7 @@ Resources:
     Type: AWS::Lambda::Permission
   getImageById:
     Properties:
-      CodeUri: s3://mitsu-serverless-book-sample-spa/1777138dccb078718e4f98e4ccb22530
+      CodeUri: s3://mitsu-serverless-book-sample-spa/109d764026f3bb2998c99d0f00802691
       Description: ''
       Environment:
         Variables:

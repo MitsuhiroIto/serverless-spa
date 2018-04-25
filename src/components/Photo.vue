@@ -9,6 +9,9 @@
     <div class="photo-detail pure-u-1 pure-u-md-1 pure-u-lg-1 pure-u-xl-1">
         <img v-bind:src="image_url_base + '/' + photo_id + '.' + type">
     </div>
+    <ul class="photo-detail pure-u-1 pure-u-md-1 pure-u-lg-1 pure-u-xl-1">
+      <li v-for="label in labels" :key="label[0]" v-bind:value="labels"> {{ label.Name }} {{ label.Confidence }}</li>
+    </ul>
     <button v-on:click="deleteImage" class="pure-button">この画像を削除する</button>
 </div>
 </template>
@@ -41,8 +44,8 @@ export default {
           headers: { Authorization: auth_header },
         })
         .then((res) => {
-          console.log(res.data);
           self.$data.type = res.data.type.split('/')[1];
+          self.$data.labels = res.data.labels.Labels;
         });
     },
     deleteImage() {

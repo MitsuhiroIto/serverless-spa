@@ -60,6 +60,7 @@ def lambda_handler(event, context):
                 'body' : '',
                 'headers' : {
                     'Content-Type' : 'application/json',
+                    'Access-Control-Allow-Origin' : '*'
                 },
             }
             return response

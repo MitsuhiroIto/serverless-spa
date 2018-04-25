@@ -11,7 +11,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 class DecimalEncoder(json.JSONEncoder):
-    def defalt(self, o):
+    def default(self, o):
         if isinstance(o, decimal.Decimal):
             if o % 1 > 0:
                 return float(o)
