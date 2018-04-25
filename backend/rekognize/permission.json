@@ -1,0 +1,27 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+                "s3:GetObject",
+                "dynamodb:UpdateItem"
+            ],
+      "Resource": [
+                "arn:aws:dynamodb:ap-northeast-1:251699169519:table/mitsu-photos",
+                "arn:aws:s3:::mitsu-serverless-app-photos/*"
+            ]
+        },
+    {
+      "Effect": "Allow",
+      "Action": [
+                "rekognition:DetectLabels",
+                "logs:CreateLogStream",
+                "rekognition:DetectFaces",
+                "logs:CreateLogGroup",
+                "logs:PutLogEvents"
+            ],
+      "Resource": "*"
+        }
+    ]
+}

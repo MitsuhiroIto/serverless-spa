@@ -1,0 +1,8 @@
+{
+  "LambdaFunctionConfigurations": [{
+    "LambdaFunctionArn": "arn:aws:lambda:ap-northeast-1:251699169519:function:image-rekognition-rekognizeImages-1RTOIJY9PCWIC",
+    "Events": [
+      "s3:ObjectCreated:*"
+    ]
+  }]
+}
